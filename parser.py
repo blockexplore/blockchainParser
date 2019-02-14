@@ -7,6 +7,19 @@ import blockObj
 import sys
 import array
 import traceback
+import mysql.connector
+
+mydb = mysql.connector.connect(
+    host="classmysql.engr.oregonstate.edu",
+    user="cs440_haydena",
+    passwd="123Liberty",
+    database="cs440_haydena"
+)
+
+mycursor = mydb.cursor();
+
+
+
 
 def printBlock(block):
 
@@ -20,6 +33,11 @@ def printBlock(block):
   print("Bits: ", block.bits)
   print("Nonce: ", block.nonce)
   print("Count of Transactions: ", block.count)
+
+  sql = "INSERT INTO Block (transHash, magicNum, size, version, prevHash, merkleHash, time, bits, nonce, transCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+  val = (block.hashTrans, block.magicNum, block.size, block.version, block.prevHash, block.merkHash, block.time, block.bits, block.nonce, block.count)
+  mycursor.execute(sql, val)
+  mydb.commit()
 
 
 
@@ -132,7 +150,7 @@ def readTransaction(blockFile, b):
   beginByte = blockFile.tell()
   inputIds = []
   outputIds = []
-  version = hexToInt(readIntLittleEndian(blockFile)) 
+  version = hexToInt(readIntLittleEndian(blockFile))
   cutStart1 = blockFile.tell()
   cutEnd1 = 0
   inputCount = readVarInt(blockFile)
@@ -213,7 +231,7 @@ def readBlock(blockFile):
   bits = hexToInt(readIntLittleEndian(blockFile))
   nonce = hexToInt(readIntLittleEndian(blockFile))
   countOfTransactions = readVarInt(blockFile)
-  
+
   b = blockObj.blockObj(
     '',
     magicNumber,
@@ -229,7 +247,7 @@ def readBlock(blockFile):
 
   for transactionIndex in range(0, countOfTransactions):
     readTransaction(blockFile, b)
-  
+
   printBlock(b)
 
 
