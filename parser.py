@@ -10,10 +10,10 @@ import traceback
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="classmysql.engr.oregonstate.edu",
-    user="cs440_haydena",
-    passwd="123Liberty",
-    database="cs440_haydena"
+    host="***",
+    user="***",
+    passwd="***",
+    database="***"
 )
 
 mycursor = mydb.cursor();
