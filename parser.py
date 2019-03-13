@@ -34,11 +34,15 @@ def printBlock(block):
   print("Nonce: ", block.nonce)
   print("Count of Transactions: ", block.count)
 
-  sql = "INSERT INTO Block (transHash, magicNum, size, version, prevHash, merkleHash, time, bits, nonce, transCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-  val = (block.hashTrans, block.magicNum, block.size, block.version, block.prevHash, block.merkHash, block.time, block.bits, block.nonce, block.count)
-  mycursor.execute(sql, val)
+  sql1 = "INSERT INTO Block (transHash, magicNum, size, version, prevHash, merkleHash, bits, nonce, transCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+  val1 = (block.hashTrans, block.magicNum, block.size, block.version, block.prevHash, block.merkHash, block.bits, block.nonce, block.count)
+  mycursor.execute(sql1, val1)
   mydb.commit()
 
+  sql2 = "INSERT INTO Transaction (transHash, time) VALUES (%s, %s)"
+  val2 = (block.hashTrans, block.time)
+  mycursor.execute(sql2, val2)
+  mydb.commit()
 
 
 def log(string):
@@ -110,7 +114,7 @@ def readVarInt(blockFile):
   return int(binascii.hexlify(returnInt), 16)
 
 def readInput(blockFile):
-  previousHash = binascii.hexlify(blockFile.read(32)[::-1])
+  previousHash = stringLittleEndianToBigEndian(blockFile.read(32)[::-1])
   outId = binascii.hexlify(readIntLittleEndian(blockFile))
   scriptLength = readVarInt(blockFile)
   scriptSignatureRaw = hexToStr(blockFile.read(scriptLength))
@@ -224,8 +228,8 @@ def readBlock(blockFile):
   magicNumber = binascii.hexlify(blockFile.read(4))
   blockSize = hexToInt(readIntLittleEndian(blockFile))
   version = hexToInt(readIntLittleEndian(blockFile))
-  previousHash = binascii.hexlify(blockFile.read(32))
-  merkleHash = binascii.hexlify(blockFile.read(32))
+  previousHash = stringLittleEndianToBigEndian(blockFile.read(32))
+  merkleHash = stringLittleEndianToBigEndian(blockFile.read(32))
   creationTimeTimestamp = hexToInt(readIntLittleEndian(blockFile))
   #creationTime = datetime.datetime.fromtimestamp(creationTimeTimestamp).strftime('%d-%m-%Y %H:%M:%S')
   creationTime = datetime.datetime.fromtimestamp(creationTimeTimestamp).strftime('%Y-%m-%d %H:%M:%S')
