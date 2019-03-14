@@ -1,7 +1,7 @@
 	
 	
 	<header> 
-		My Site - <em>Welcome <span id="username"><?php echo $user;?></span>!</em>
+		Block Buddy
 	</header>
 	<nav>
 		<ul>

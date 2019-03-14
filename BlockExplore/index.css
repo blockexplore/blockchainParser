@@ -28,7 +28,7 @@ header em {
 html {
 	background-color: light gray;
 	font-family: Helvetica;
-	font-size: 9px;
+	font-size: 14px;
 }
 nav ul {
     list-style-type: none;
@@ -242,6 +242,7 @@ th,
 td {
   border: 1px solid black;
   border-collapse: collapse;
+  font-size: 14px;
 }
 
 th,

@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <?php
 		session_start();
-		$currentpage="transCount";
+		$currentpage="searchByBlock";
 		include "pages.php";
 ?>
 <html>
 	<head>
-		<title>transCount</title>
+		<title>searchByBlock</title>
 		<link rel="stylesheet" href="index.css">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -34,15 +34,12 @@
 
 <form method="get" id="addForm">
 <fieldset>
-	<legend>Transactions:</legend>
+	<legend>blockHash:</legend>
     <p>
-        <label for="min">Min Transactions</label>
-        <input type="number" min=1 max = 99999 class="required" name="min" id="min" title="min should be numeric">
+        <label for="hash">blockHash</label>
+        <input type="text" class="required" name="hash" id="hash">
     </p>
-    <p>
-        <label for="max">Max Transactions</label>
-        <input type="number" min=1 max = 99999 class="required" name="max" id="max" title="max should be numeric">
-    </p>
+
 
 </fieldset>
 
@@ -55,18 +52,16 @@
 <?php
 
 
-	$min = mysqli_real_escape_string($conn, $_GET['min']);
-	$max = mysqli_real_escape_string($conn, $_GET['max']);
+	$hash = mysqli_real_escape_string($conn, $_GET['hash']);
+	
 
 // query to select all information from supplier table
-	if($min==NULL){
-		$min = 1;
-	}
-	if($max==NULL){
-		$query = "SELECT blockHash, transCount FROM BlockTable where transCount>=$min order by transCount";
-	}else{
-		$query = "SELECT blockHash, transCount FROM BlockTable where transCount>=$min AND transCount<=$max order by transCount";
-	}
+
+
+		$query = "select transHash from TransBlock where blockHash=\"$hash\"";
+
+
+
 	
 	
 // Get results from query
@@ -76,7 +71,7 @@
 	}
 // get number of columns in table	
 	$fields_num = mysqli_num_fields($result);
-	echo "<h1>Blocks:</h1>";
+	echo "<h1>Transactions:</h1>";
 	echo "<table id='t01' border='1' class=\"display\" style=\"width:100%\"><thead><tr>";
 	
 // printing table headers
@@ -95,7 +90,7 @@
 				echo "<td>$cell</td>";
 			}
 			else{
-				echo "<td><a href='blockHash.php?hash=" . $cell . "'>$cell</a></td>";
+				echo "<td><a href='transHash.php?hash=" . $cell . "'>$cell</a></td>";
 			}
 			$i++;
 		}		

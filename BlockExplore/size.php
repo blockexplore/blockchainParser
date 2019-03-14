@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <?php
 		session_start();
-		$currentpage="transCount";
+		$currentpage="size";
 		include "pages.php";
 ?>
 <html>
 	<head>
-		<title>transCount</title>
+		<title>size</title>
 		<link rel="stylesheet" href="index.css">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -34,13 +34,13 @@
 
 <form method="get" id="addForm">
 <fieldset>
-	<legend>Transactions:</legend>
+	<legend>Size:</legend>
     <p>
-        <label for="min">Min Transactions</label>
+        <label for="min">Min Size</label>
         <input type="number" min=1 max = 99999 class="required" name="min" id="min" title="min should be numeric">
     </p>
     <p>
-        <label for="max">Max Transactions</label>
+        <label for="max">Max Size</label>
         <input type="number" min=1 max = 99999 class="required" name="max" id="max" title="max should be numeric">
     </p>
 
@@ -63,9 +63,9 @@
 		$min = 1;
 	}
 	if($max==NULL){
-		$query = "SELECT blockHash, transCount FROM BlockTable where transCount>=$min order by transCount";
+		$query = "SELECT blockHash, size FROM BlockTable where size>=$min order by size";
 	}else{
-		$query = "SELECT blockHash, transCount FROM BlockTable where transCount>=$min AND transCount<=$max order by transCount";
+		$query = "SELECT blockHash, size FROM BlockTable where size>=$min AND size<=$max order by size";
 	}
 	
 	

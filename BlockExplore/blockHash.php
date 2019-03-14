@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <?php
 		session_start();
-		$currentpage="transCount";
+		$currentpage="blockHash";
 		include "pages.php";
 ?>
 <html>
 	<head>
-		<title>transCount</title>
+		<title>blockHash</title>
 		<link rel="stylesheet" href="index.css">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -34,15 +34,12 @@
 
 <form method="get" id="addForm">
 <fieldset>
-	<legend>Transactions:</legend>
+	<legend>blockHash:</legend>
     <p>
-        <label for="min">Min Transactions</label>
-        <input type="number" min=1 max = 99999 class="required" name="min" id="min" title="min should be numeric">
+        <label for="hash">blockHash</label>
+        <input type="text" class="required" name="hash" id="hash">
     </p>
-    <p>
-        <label for="max">Max Transactions</label>
-        <input type="number" min=1 max = 99999 class="required" name="max" id="max" title="max should be numeric">
-    </p>
+
 
 </fieldset>
 
@@ -55,18 +52,20 @@
 <?php
 
 
-	$min = mysqli_real_escape_string($conn, $_GET['min']);
-	$max = mysqli_real_escape_string($conn, $_GET['max']);
+	$hash = mysqli_real_escape_string($conn, $_GET['hash']);
+	
 
 // query to select all information from supplier table
-	if($min==NULL){
-		$min = 1;
-	}
-	if($max==NULL){
-		$query = "SELECT blockHash, transCount FROM BlockTable where transCount>=$min order by transCount";
+
+	if($hash==NULL){
+		$hash = 0;
+		$query = "SELECT * FROM BlockTable where 1";
 	}else{
-		$query = "SELECT blockHash, transCount FROM BlockTable where transCount>=$min AND transCount<=$max order by transCount";
+		$hash="\"$hash%\"";
+		$query = "SELECT * FROM BlockTable where blockHash like $hash";
 	}
+	
+
 	
 	
 // Get results from query
@@ -95,7 +94,7 @@
 				echo "<td>$cell</td>";
 			}
 			else{
-				echo "<td><a href='blockHash.php?hash=" . $cell . "'>$cell</a></td>";
+				echo "<td><a href='searchByBlock.php?hash=" . $cell . "'>$cell</a></td>";
 			}
 			$i++;
 		}		
