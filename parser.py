@@ -34,13 +34,30 @@ def printBlock(block):
   print("Nonce: ", block.nonce)
   print("Count of Transactions: ", block.count)
 
-  sql1 = "INSERT INTO Block (transHash, magicNum, size, version, prevHash, merkleHash, bits, nonce, transCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-  val1 = (block.hashTrans, block.magicNum, block.size, block.version, block.prevHash, block.merkHash, block.bits, block.nonce, block.count)
+  little_endian_prevHash = stringBigEndianToLittleEndian(block.prevHash)
+  little_endian_merkHash = stringBigEndianToLittleEndian(block.merkHash)
+  little_endian_time = stringBigEndianToLittleEndian(hex(block.timeTest)[2:])
+  little_endian_bits = stringBigEndianToLittleEndian(hex(block.bits)[2:])
+  little_endian_nonce = str(hex(block.nonce)).lstrip('0x')
+  little_endian_nonce = little_endian_nonce.rstrip('L')
+  while len(little_endian_nonce) < 8:
+    little_endian_nonce = '0' + little_endian_nonce
+  little_endian_nonce = stringBigEndianToLittleEndian(little_endian_nonce)
+  currVersion = stringBigEndianToLittleEndian(format(block.version, '08X'))
+
+  header = currVersion + little_endian_prevHash + little_endian_merkHash + little_endian_time + little_endian_bits + little_endian_nonce
+  header = binascii.unhexlify(header)
+  blockHash = stringLittleEndianToBigEndian(binascii.unhexlify(hashlib.sha256(hashlib.sha256(header).digest()).hexdigest()))
+  print("Block Hash: ", blockHash)
+
+
+  sql1 = "INSERT INTO BlockTable (blockHash, magicNum, size, version, prevHash, bits, nonce, transCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+  val1 = (blockHash, block.magicNum, block.size, block.version, block.prevHash, block.bits, block.nonce, block.count)
   mycursor.execute(sql1, val1)
   mydb.commit()
 
-  sql2 = "INSERT INTO Transaction (transHash, time) VALUES (%s, %s)"
-  val2 = (block.hashTrans, block.time)
+  sql2 = "INSERT INTO TransTable (transHash, time, merkleHash) VALUES (%s, %s, %s)"
+  val2 = (block.hashTrans, block.time, block.merkHash)
   mycursor.execute(sql2, val2)
   mydb.commit()
 
@@ -84,6 +101,11 @@ def stringLittleEndianToBigEndian(string):
   n = len(string) / 2
   fmt = '%dh' % n
   return struct.pack(fmt, *reversed(struct.unpack(fmt, string)))
+
+def stringBigEndianToLittleEndian(string):
+    splited = [str(string)[i:i + 2] for i in range(0, len(str(string)), 2)]
+    splited.reverse()
+    return "".join(splited)
 
 def readShortLittleEndian(blockFile):
   return struct.pack(">H", struct.unpack("<H", blockFile.read(2))[0])
@@ -245,6 +267,7 @@ def readBlock(blockFile):
     previousHash,
     merkleHash,
     creationTime,
+    creationTimeTimestamp,
     bits,
     nonce,
     countOfTransactions
