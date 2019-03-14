@@ -21,7 +21,7 @@ mycursor = mydb.cursor();
 
 
 
-def printBlock(block):
+def printBlock(block, trans):
 
   print("Hash Transaction: ", block.hashTrans)
   print("Magic Number: ", block.magicNum)
@@ -57,7 +57,7 @@ def printBlock(block):
   mydb.commit()
 
   sql2 = "INSERT INTO TransTable (transHash, time, merkleHash) VALUES (%s, %s, %s)"
-  val2 = (block.hashTrans, block.time, block.merkHash)
+  val2 = (trans.hashTrans, trans.time, trans.merkHash)
   mycursor.execute(sql2, val2)
   mydb.commit()
 
@@ -244,6 +244,7 @@ def readTransaction(blockFile, b):
     print(hashTransaction)
 
   b.hashTrans = hashTransaction
+  t.hashTrans = hashTransaction
 
 # Create new Block Object from blockFile
 def readBlock(blockFile):
@@ -273,10 +274,16 @@ def readBlock(blockFile):
     countOfTransactions
   )
 
-  for transactionIndex in range(0, countOfTransactions):
-    readTransaction(blockFile, b)
+  t = transHash.transHash(
+    '',
+    creationTime,
+    merkleHash
+  )
 
-  printBlock(b)
+  for transactionIndex in range(0, countOfTransactions):
+    readTransaction(blockFile, b, t)
+
+  printBlock(b, t)
 
 
 def main():
