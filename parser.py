@@ -4,16 +4,17 @@ import datetime
 import hashlib
 import base58
 import blockObj
+import transObj
 import sys
 import array
 import traceback
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="***",
-    user="***",
-    passwd="***",
-    database="***"
+    host="classmysql.engr.oregonstate.edu",
+    user="cs440_haydena",
+    passwd="poopSoup69",
+    database="cs440_haydena"
 )
 
 mycursor = mydb.cursor();
@@ -56,8 +57,8 @@ def printBlock(block, trans):
   mycursor.execute(sql1, val1)
   mydb.commit()
 
-  sql2 = "INSERT INTO TransTable (transHash, time, merkleHash) VALUES (%s, %s, %s)"
-  val2 = (trans.hashTrans, trans.time, trans.merkHash)
+  sql2 = "INSERT INTO TransTable (transHash, blockHash, time, merkleHash) VALUES (%s, %s, %s, %s)"
+  val2 = (trans.hashTrans, blockHash, trans.time, trans.merkHash)
   mycursor.execute(sql2, val2)
   mydb.commit()
 
@@ -171,7 +172,7 @@ def readOutput(blockFile):
   # log("> Script Signature (PubKey): " + scriptSignature)
   # log("> Address: " + address)
 
-def readTransaction(blockFile, b):
+def readTransaction(blockFile, b, t):
   extendedFormat = False
   beginByte = blockFile.tell()
   inputIds = []
@@ -274,7 +275,7 @@ def readBlock(blockFile):
     countOfTransactions
   )
 
-  t = transHash.transHash(
+  t = transObj.transObj(
     '',
     creationTime,
     merkleHash
