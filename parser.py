@@ -4,6 +4,7 @@ import datetime
 import hashlib
 import base58
 import blockObj
+import transObj
 import sys
 import array
 import traceback
@@ -19,9 +20,24 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor();
 
 
+def calculateHash(block, trans):
+    little_endian_prevHash = stringBigEndianToLittleEndian(block.prevHash)
+    little_endian_merkHash = stringBigEndianToLittleEndian(block.merkHash)
+    little_endian_time = stringBigEndianToLittleEndian(hex(block.timeTest)[2:])
+    little_endian_bits = stringBigEndianToLittleEndian(hex(block.bits)[2:])
+    little_endian_nonce = str(hex(block.nonce)).lstrip('0x')
+    little_endian_nonce = little_endian_nonce.rstrip('L')
+    while len(little_endian_nonce) < 8:
+      little_endian_nonce = '0' + little_endian_nonce
+    little_endian_nonce = stringBigEndianToLittleEndian(little_endian_nonce)
+    currVersion = stringBigEndianToLittleEndian(format(block.version, '08X'))
 
+    header = currVersion + little_endian_prevHash + little_endian_merkHash + little_endian_time + little_endian_bits + little_endian_nonce
+    header = binascii.unhexlify(header)
+    blockHash = stringLittleEndianToBigEndian(binascii.unhexlify(hashlib.sha256(hashlib.sha256(header).digest()).hexdigest()))
+    return blockHash
 
-def printBlock(block):
+def printBlock(block, trans, blockHash):
 
   print("Hash Transaction: ", block.hashTrans)
   print("Magic Number: ", block.magicNum)
@@ -34,31 +50,13 @@ def printBlock(block):
   print("Nonce: ", block.nonce)
   print("Count of Transactions: ", block.count)
 
-  little_endian_prevHash = stringBigEndianToLittleEndian(block.prevHash)
-  little_endian_merkHash = stringBigEndianToLittleEndian(block.merkHash)
-  little_endian_time = stringBigEndianToLittleEndian(hex(block.timeTest)[2:])
-  little_endian_bits = stringBigEndianToLittleEndian(hex(block.bits)[2:])
-  little_endian_nonce = str(hex(block.nonce)).lstrip('0x')
-  little_endian_nonce = little_endian_nonce.rstrip('L')
-  while len(little_endian_nonce) < 8:
-    little_endian_nonce = '0' + little_endian_nonce
-  little_endian_nonce = stringBigEndianToLittleEndian(little_endian_nonce)
-  currVersion = stringBigEndianToLittleEndian(format(block.version, '08X'))
 
-  header = currVersion + little_endian_prevHash + little_endian_merkHash + little_endian_time + little_endian_bits + little_endian_nonce
-  header = binascii.unhexlify(header)
-  blockHash = stringLittleEndianToBigEndian(binascii.unhexlify(hashlib.sha256(hashlib.sha256(header).digest()).hexdigest()))
   print("Block Hash: ", blockHash)
 
 
   sql1 = "INSERT INTO BlockTable (blockHash, magicNum, size, version, prevHash, bits, nonce, transCount) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
   val1 = (blockHash, block.magicNum, block.size, block.version, block.prevHash, block.bits, block.nonce, block.count)
   mycursor.execute(sql1, val1)
-  mydb.commit()
-
-  sql2 = "INSERT INTO TransTable (transHash, time, merkleHash) VALUES (%s, %s, %s)"
-  val2 = (block.hashTrans, block.time, block.merkHash)
-  mycursor.execute(sql2, val2)
   mydb.commit()
 
 
@@ -171,7 +169,7 @@ def readOutput(blockFile):
   # log("> Script Signature (PubKey): " + scriptSignature)
   # log("> Address: " + address)
 
-def readTransaction(blockFile, b):
+def readTransaction(blockFile, b, t, blockHash):
   extendedFormat = False
   beginByte = blockFile.tell()
   inputIds = []
@@ -244,6 +242,13 @@ def readTransaction(blockFile, b):
     print(hashTransaction)
 
   b.hashTrans = hashTransaction
+  t.hashTrans = hashTransaction
+  t.blockHash = blockHash
+
+  sql2 = "INSERT INTO TransTable (transHash, blockHash, time, merkleHash) VALUES (%s, %s, %s, %s)"
+  val2 = (t.hashTrans, blockHash, t.time, t.merkHash)
+  mycursor.execute(sql2, val2)
+  mydb.commit()
 
 # Create new Block Object from blockFile
 def readBlock(blockFile):
@@ -273,11 +278,19 @@ def readBlock(blockFile):
     countOfTransactions
   )
 
+  t = transObj.transObj(
+    '',
+    '',
+    creationTime,
+    merkleHash
+  )
+
+  blockHash = calculateHash(b, t)
+
+  printBlock(b, t, blockHash)
+
   for transactionIndex in range(0, countOfTransactions):
-    readTransaction(blockFile, b)
-
-  printBlock(b)
-
+    readTransaction(blockFile, b, t, blockHash)
 
 def main():
   blockFilename = sys.argv[1]
