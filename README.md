@@ -1,6 +1,9 @@
 # blockchainParser
 A python program that takes the Bitcoin blockchain data and makes it readable in a relational database.  There is also a website branch which allows users to make basic queries.
 
+To use the parser, run: `py -2.7 parser.py blk00000.dat`
+Replace blk00000.dat with any other block file downloaded from the Bitcoin Core Wallet.
+
 ## Licence and Citations
 MIT License
 
