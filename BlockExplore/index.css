@@ -1,0 +1,310 @@
+header {
+	
+	height: 20px; 
+	background-color: lightgrey;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	padding: 20px 20px 20px 20px;
+	font-size: 1.5em;
+
+}
+header > h1 {
+	color: white;
+	font-size : 3em;
+	font-style: italic;
+	text-align: right;
+}
+header > img {
+    float: left;
+    margin: 0 0 10px 10px;
+}
+
+header em {
+	font-size: 0.75em
+}
+
+
+html {
+	background-color: light gray;
+	font-family: Helvetica;
+	font-size: 14px;
+}
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+	margin: 0 0 0 0;
+}
+
+nav li {
+    float: left;
+    border-right:1px solid #bbb;
+}
+
+nav li:nth-last-child(-n+4){
+    border-right: none;
+    float: right;
+    border-left:1px solid #bbb;
+}
+
+nav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 10px 16px;
+    text-decoration: none;
+}
+nav li a:hover:not(.active) {
+    background-color: orange;
+}
+
+nav .active {
+    background-color: green;
+}
+main {
+	overflow:auto;
+	margin: auto;
+	margin: 10px 10px 10px 10px;
+	background-color: white;
+	border: solid grey 2px;
+	border-radius: 8px;
+	padding: 10px 10px 10px 10px;
+}
+#betSpan {
+	float: right;
+
+}
+#betSection {
+	margin: 10px 10px 10px 10px;
+}
+#buttons {
+	width: 600px;
+	height: 120px;
+	margin: auto;
+	margin-top: 10px;
+}
+
+.selector {
+	float: left;
+	margin: 10px;
+	width: 100px;
+	height: 100px;
+	opacity: 0.6;
+}
+
+.selector:hover {
+	opacity: 1;
+}
+
+#results {
+	width: 300px;
+	height: 180px;
+	margin: auto;
+
+}
+
+#results div {
+	float:left;
+	height: 100px;
+	width: 120px;
+	margin: 10px 15px;
+	text-align: center;
+}
+
+#results img {
+	margin: 10px;
+}
+
+#prompt {
+	text-align: center;
+	font-size: 35px;
+}
+
+
+
+#instructions {
+	display: inline-block;
+	width: 400px;
+	margin-left: 20px;
+	font-size: 12px;
+	background-color: white;
+	border: solid grey 2px;
+	border-radius: 8px;
+	padding: 0px 5px 15px 15px;
+}
+
+#scores {
+	width: 190px;
+	float: right;
+	text-align: right;
+	margin-right: 25px;
+	margin-top: 10px;
+}
+
+#imgwrapper {
+	display: block;
+	width: 600px;
+	height: 400px;
+	margin: 40px auto;
+	overflow:hidden;
+}
+
+#imgbox {
+	display: block;
+	margin: auto;
+}
+.clearfix {
+    overflow: auto;
+}
+
+em {
+	font-family: "Times New Roman", Georgia, Serif;
+}
+footer {
+	background-color: gray;
+	height: 20px; 
+	padding: 10px;
+	padding-right: 10px;
+	color: white;
+	border: solid;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+
+}
+#fspan {
+	float: right;
+	font-family: verdana;
+    font-size: 12px;
+	color: orange;
+}
+.container1 {
+	margin-left: 20px;
+	font-size: 0.75em;
+}
+legend {
+    padding: 1px 8px;
+    border: 2px solid #e0d8b7;
+    border-radius: 6px / 12px;
+    box-shadow: none;
+    background: #fff;
+    font-size: 14px;
+    color: #5e5223;
+}
+form {
+    display: block;
+    margin-top: 0em;
+}
+fieldset label {
+    float: left;
+    clear: left;
+    padding-top: 2px;
+    width: 120px;
+    text-align: right;
+    font-size: 90%;
+    color: #333;
+}
+fieldset input, fieldset textarea, fieldset select {
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background: #fff;
+    line-height: 1.1;
+    font-family: inherit;
+    font-size: 1.1em;
+}
+fieldset span {
+    display: block;
+    margin: 0 0 0 120px;
+    padding: 0 0 4px 4px;
+}
+fieldset input[type="submit"], fieldset input[type="reset"], fieldset input[type="button"] {
+    padding: 2px 6px;
+    border: #b5bbc4 1px solid;
+    background: #f7fafc;
+    background-image: -webkit-linear-gradient(top,#fff,#dae6f1);
+    background-image: -moz-linear-gradient(top,#fff,#dae6f1);
+    background-image: -ms-linear-gradient(top,#fff,#dae6f1);
+    background-image: linear-gradient(to bottom,#fff,#dae6f1);
+    font-size: 100%;
+    color: #333;
+}
+#passformat {
+	float: right; 
+	width: 50%; 
+	font-size: 0.8em;"
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 5px;
+  text-align: left;
+}
+table#t01 {
+	width:400px;
+}
+
+table#t01 tr:nth-child(even) {
+  background-color: #e0ebeb;
+}
+
+table#t01 tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+table#t01 th {
+  background-color: black;
+  color: white;
+}
+
+#t01  tr:hover {
+  background-color: orange;
+  color: orange;
+}
+caption {
+  font-weight: bold;
+  padding: 0.5em 0 0.5em 0;
+  text-align: left;
+}
+.btn2 {
+  -webkit-border-radius: 2;
+  -moz-border-radius: 2;
+  border-radius: 2px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 12px;
+  background: green;
+  padding: 8px 8px 8px 8px;
+  text-decoration: none;
+}
+
+.btn2:hover {
+  background: orange;
+  text-decoration: none;
+}
